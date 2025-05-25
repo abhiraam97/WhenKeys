@@ -1,16 +1,61 @@
 ﻿@inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+<MudThemeProvider Theme="@_theme" IsDarkMode="@_isDarkMode" />
 
-        <article class="content px-4">
+<MudLayout>
+    <MudAppBar Color="Color.Info" Elevation="4">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
+        <MudText Typo="Typo.h6" Class="ml-2">WhenKeys</MudText>
+        <MudSpacer />
+        <MudSwitch @bind-Value="_isDarkMode" Color="Color.Default"
+                   ThumbIcon="@( _isDarkMode ? @Icons.Material.Filled.DarkMode : @Icons.Material.Filled.LightMode )" />
+    </MudAppBar>
+
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="1" ClipMode="DrawerClipMode.Always">
+        <MudNavMenu>
+
+                <MudNavLink Href="/" Match="NavLinkMatch.All">Home</MudNavLink>
+                <MudNavLink Href="/trending">Trending</MudNavLink>
+
+        </MudNavMenu>
+    </MudDrawer>
+
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.False" Class="mt-4">
             @Body
-        </article>
-    </main>
-</div>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+<MudSnackbarProvider />
+<MudDialogProvider />
+<MudPopoverProvider />
+
+@code {
+    private bool _isDarkMode = false;
+    private bool _drawerOpen = true;
+
+    private void ToggleDrawer() => _drawerOpen = !_drawerOpen;
+
+    private readonly MudTheme _theme = new()
+        {
+            PaletteLight = new PaletteLight
+            {
+                Primary = Colors.Blue.Default,
+                Background = "#ffffff",
+                Surface = "#f5f5f5",
+                AppbarBackground = Colors.Blue.Lighten5
+            },
+            PaletteDark = new PaletteDark
+            {
+                Primary = Colors.Blue.Lighten2,
+                Background = "#1E1E2D",
+                Surface = "#2A2A3C",
+                AppbarBackground = "#1E1E2D",
+                TextPrimary = "#ffffffDE",
+                DrawerBackground = "#1E1E2D",
+                DrawerText = "#ffffffB2",
+                DrawerIcon = "#ffffffB2"
+            }
+        };
+}
