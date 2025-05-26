@@ -1,0 +1,65 @@
+﻿@page "/oneQ"
+@inherits LayoutComponentBase
+@using MudBlazor
+
+<PageTitle>Today’s Question</PageTitle>
+
+<MudPaper Class="p-6 mx-auto mt-4" MaxWidth="700px" Elevation="3">
+    <MudText Typo="Typo.h4" Align="Align.Center">@QuestionOfTheDay</MudText>
+    <MudDivider Class="my-4" />
+
+    @if (!_hasSubmitted)
+    {
+        <MudTextField @bind-Value="_userResponse"
+                      Placeholder="Share your take..."
+                      Lines="5"
+                      FullWidth="true"
+                      Margin="Margin.Dense"
+                      Immediate="true" />
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   OnClick="SubmitResponse"
+                   Disabled="@string.IsNullOrWhiteSpace(_userResponse)">
+            Submit
+        </MudButton>
+    }
+    else
+    {
+        <MudAlert Severity="Severity.Success" Dense="true" Class="mt-2">
+            Thanks for sharing your view!
+        </MudAlert>
+    }
+</MudPaper>
+
+<MudPaper Class="p-4 mx-auto mt-4" MaxWidth="700px" Elevation="1">
+    <MudText Typo="Typo.h6" Class="mb-2">Community Responses:</MudText>
+    @foreach (var response in Responses)
+    {
+        <MudPaper Class="p-3 mb-2">
+            <MudText Typo="Typo.body1">@response</MudText>
+        </MudPaper>
+    }
+</MudPaper>
+
+@code {
+    private string QuestionOfTheDay = "What’s one tech belief you’ve changed your mind about?";
+    private string _userResponse = string.Empty;
+    private bool _hasSubmitted = false;
+
+    private List<string> Responses = new()
+    {
+        "I used to think JavaScript was a toy language.",
+        "I thought async/await was overrated until I had to manage 10 concurrent APIs.",
+        "Frameworks don’t matter as much as clean code habits."
+    };
+
+    private void SubmitResponse()
+    {
+        if (!_hasSubmitted && !string.IsNullOrWhiteSpace(_userResponse))
+        {
+            Responses.Insert(0, _userResponse.Trim());
+            _hasSubmitted = true;
+            _userResponse = string.Empty;
+        }
+    }
+}
